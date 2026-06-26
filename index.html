@@ -54,7 +54,7 @@
                         <input type="file" id="image-input" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
                         <div class="space-y-1">
                             <span class="text-blue-600 font-semibold block text-sm" id="file-chosen-text">Bấm vào đây để chọn file ảnh</span>
-                            <span class="text-xs text-slate-400 block">* Ảnh sẽ được giữ ở độ nét tối đa (Sát hạn mức 1MB của hệ thống).</span>
+                            <span class="text-xs text-slate-400 block">* Bạn có thể up ảnh dung lượng lớn tùy ý. Web sẽ tự xử lý về mức ~1MB siêu nét.</span>
                         </div>
                     </div>
                 </div>
@@ -159,23 +159,20 @@
             toggleDropdown();
         };
 
-        // Đóng dropdown khi click ra ngoài
         document.addEventListener('click', function(e) {
             const trigger = document.getElementById('custom-select-trigger');
             const list = document.getElementById('custom-dropdown-list');
-            if (!trigger.contains(e.target) && !list.contains(e.target)) {
+            if (trigger && list && !trigger.contains(e.target) && !list.contains(e.target)) {
                 list.classList.add('hidden');
                 document.getElementById('dropdown-arrow').classList.remove('rotate-180');
             }
         });
 
-        // Hiển thị tên file khi người dùng chọn ảnh
         document.getElementById('image-input').addEventListener('change', function(e) {
             const fileName = e.target.files[0] ? e.target.files[0].name : "Bấm vào đây để chọn file ảnh";
             document.getElementById('file-chosen-text').innerText = fileName;
         });
 
-        // HÀM HIỂN THỊ THÔNG BÁO CUSTOM MODAL
         window.showModal = function(title, message, iconType = 'info', buttons = []) {
             return new Promise((resolve) => {
                 const modal = document.getElementById('custom-modal');
@@ -219,8 +216,8 @@
             });
         };
 
-        // Thuật toán kiểm soát dung lượng: Giữ nguyên độ sắc nét cao nhất, tự động điều chỉnh vừa vặn hạn mức 1MB của Firestore
-        function processImageMaxQuality(file) {
+        // THUẬT TOÁN NÉN VÒNG LẶP: Tự động ép file ảnh về mức sát 950KB để vừa khít Firestore mà vẫn giữ nét căng
+        function autoCompressToFirestoreLimit(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
@@ -232,8 +229,8 @@
                         let width = img.width;
                         let height = img.height;
 
-                        // Nếu ảnh quá khổng lồ, đưa về hạn mức tối đa 2500px rộng để đảm bảo chuỗi Base64 không vượt quá 1MB Firestore
-                        const maxResolution = 2500;
+                        // Khung phân giải lớn hỗ trợ hiển thị cực nét
+                        const maxResolution = 3000;
                         if (width > maxResolution) {
                             height = Math.round((height * maxResolution) / width);
                             width = maxResolution;
@@ -244,8 +241,16 @@
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
                         
-                        // Xuất ảnh ở chất lượng cực cao (95% so với gốc, mắt thường hoàn toàn không phân biệt được)
-                        resolve(canvas.toDataURL('image/jpeg', 0.95));
+                        let quality = 0.95; 
+                        let base64Result = canvas.toDataURL('image/jpeg', quality);
+                        
+                        // Vòng lặp tính toán: Cứ vượt quá 1,000,000 ký tự (~1MB) là tự hạ nhẹ chất lượng xuống 5% cho tới khi an toàn
+                        while (base64Result.length > 1000000 && quality > 0.1) {
+                            quality -= 0.05;
+                            base64Result = canvas.toDataURL('image/jpeg', quality);
+                        }
+                        
+                        resolve(base64Result);
                     };
                 };
                 reader.onerror = error => reject(error);
@@ -265,7 +270,7 @@
 
             try {
                 btn.disabled = true;
-                btn.innerText = "Đang kiểm tra hệ thống...";
+                btn.innerText = "Đang xử lý...";
                 statusDiv.classList.remove('hidden', 'text-rose-600', 'text-green-600');
                 statusDiv.classList.add('text-blue-600');
                 statusDiv.innerText = "🔍 Đang kiểm tra lịch sử gửi bài...";
@@ -280,10 +285,10 @@
                     return;
                 }
 
-                statusDiv.innerText = "⚙️ Đang xử lý mã hóa hình ảnh siêu nét...";
-                const base64Image = await processImageMaxQuality(file);
+                statusDiv.innerText = "⚙️ Đang tối ưu dung lượng ảnh thông minh (<1MB)...";
+                const base64Image = await autoCompressToFirestoreLimit(file);
 
-                statusDiv.innerText = "🚀 Đang truyền dữ liệu lên Firestore...";
+                statusDiv.innerText = "🚀 Đang truyền dữ liệu lên máy chủ Firestore...";
                 await addDoc(collection(db, "uploads"), {
                     fullName: name,
                     imageUrl: base64Image,
@@ -292,9 +297,8 @@
 
                 statusDiv.className = "text-center text-sm font-semibold mt-2 text-green-600";
                 statusDiv.innerText = `🎉 Bạn ${name} đã gửi ảnh thành công!`;
-                showModal("Thành công tốt đẹp!", `🎉 Chúc mừng bạn [${name}] đã gửi ảnh kỷ yếu siêu nét thành công lên hệ thống!`, "success");
+                showModal("Thành công tốt đẹp!", `🎉 Chúc mừng bạn [${name}] đã gửi ảnh kỷ yếu thành công! Ảnh đã được tối ưu độ nét cao nhất vừa vặn hệ thống.`, "success");
                 
-                // Reset Form
                 fileInput.value = ""; 
                 chosenName = "";
                 document.getElementById('selected-name-text').innerText = "-- Bấm vào đây để chọn tên --";
@@ -304,7 +308,7 @@
                 console.error(error);
                 statusDiv.className = "text-center text-sm font-semibold mt-2 text-rose-600";
                 statusDiv.innerText = "Có lỗi xảy ra, vui lòng thử lại!";
-                showModal("Thất bại", "Ảnh gốc quá lớn khiến hệ thống Firestore quá tải hạn mức 1MB, hãy thử một tấm ảnh khác hoặc chụp lại nhé!", "error");
+                showModal("Thất bại", "Lỗi đường truyền kết nối dữ liệu Firebase, vui lòng thử lại sau!", "error");
             } finally {
                 btn.disabled = false;
                 btn.innerText = "Gửi Ảnh Ngay";
@@ -404,7 +408,7 @@
                 return;
             }
 
-            showModal("Đang chuẩn bị", `Hệ thống đang đóng gói tự động ${currentAdminData.length} tệp ảnh độ nét cao thành 1 file ZIP duy nhất. Vui lòng đợi trong giây lát...`);
+            showModal("Đang chuẩn bị", `Hệ thống đang đóng gói tự động ${currentAdminData.length} tệp ảnh độ nét cao thành 1 file ZIP duy nhất. Vui lòng đợi...`);
 
             const zip = new JSZip();
             currentAdminData.forEach((item) => {
