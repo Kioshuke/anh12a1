@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống Tải và Quản lý Ảnh</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans min-h-screen">
+
+    <!-- Điều hướng giữa trang User và Admin -->
+    <nav class="bg-blue-600 p-4 text-white flex justify-center space-x-4 shadow-md">
+        <button onclick="switchPage('user')" id="nav-user-btn" class="px-4 py-2 rounded bg-blue-800 font-bold">Trang Gửi Ảnh</button>
+        <button onclick="switchPage('admin')" id="nav-admin-btn" class="px-4 py-2 rounded hover:bg-blue-700 font-bold">Trang Quản Lý (Admin)</button>
+    </nav>
+
+    <div class="max-w-4xl mx-auto p-4 mt-6">
+        
+        <!-- ================= TRANG GỬI ẢNH (USER) ================= -->
+        <div id="user-page" class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold mb-4 text-gray-800 text-center">Tải Lên Ảnh Của Bạn</h2>
+            
+            <div class="space-y-4">
+                <!-- Chọn tên -->
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Chọn tên của bạn:</label>
+                    <select id="user-select" class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500">
+                        <option value="">-- Bấm vào đây để chọn tên --</option>
+                        
+                        <!-- DANH SÁCH NAM (20) -->
+                        <optgroup label="--- NAM ---">
+                            <option value="Xuân Vương">Xuân Vương</option>
+                            <option value="Tấn Thành">Tấn Thành</option>
+                            <option value="Thanh Danh">Thanh Danh</option>
+                            <option value="Hữu Luân">Hữu Luân</option>
+                            <option value="Kiến Quốc">Kiến Quốc</option>
+                            <option value="Hữu Nhân">Hữu Nhân</option>
+                            <option value="Bảo Nguyên">Bảo Nguyên</option>
+                            <option value="Đức Anh">Đức Anh</option>
+                            <option value="Thái Hoàng">Thái Hoàng</option>
+                            <option value="Gia Bảo">Gia Bảo</option>
+                            <option value="Huỳnh Anh">Huỳnh Anh</option>
+                            <option value="Phước Nguyễn">Phước Nguyễn</option>
+                            <option value="Xuân Trường">Xuân Trường</option>
+                            <option value="Đức Hiếu">Đức Hiếu</option>
+                            <option value="Quân Hào">Quân Hào</option>
+                            <option value="Tấn Phát">Tấn Phát</option>
+                            <option value="Văn Khanh">Văn Khanh</option>
+                            <option value="Thành Ngọc">Thành Ngọc</option>
+                            <option value="Quang Vinh">Quang Vinh</option>
+                            <option value="Hoàng Kim">Hoàng Kim</option>
+                        </optgroup>
+
+                        <!-- DANH SÁCH NỮ (17) -->
+                        <optgroup label="--- NỮ ---">
+                            <option value="Lan Anh Lê">Lan Anh Lê</option>
+                            <option value="Ánh Dương">Ánh Dương</option>
+                            <option value="Bích Ngọc">Bích Ngọc</option>
+                            <option value="Phương Thuỳ">Phương Thuỳ</option>
+                            <option value="Ngọc Na">Ngọc Na</option>
+                            <option value="Ngọc Trâm">Ngọc Trâm</option>
+                            <option value="Trường Bình">Trường Bình</option>
+                            <option value="Hồng Lam">Hồng Lam</option>
+                            <option value="Lan Anh Pham">Lan Anh Pham</option>
+                            <option value="Cát Tường">Cát Tường</option>
+                            <option value="Khả Ái">Khả Ái</option>
+                            <option value="Minh Thư">Minh Thư</option>
+                            <option value="Khánh Nhung">Khánh Nhung</option>
+                            <option value="Thuỳ Trâm">Thuỳ Trâm</option>
+                            <option value="Xuân Mai">Xuân Mai</option>
+                            <option value="Cẩm Quyên">Cẩm Quyên</option>
+                            <option value="Cẩm Tú">Cẩm Tú</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <!-- Chọn file -->
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Chọn ảnh muốn gửi:</label>
+                    <input type="file" id="image-input" accept="image/*" class="w-full p-2 border rounded-md bg-gray-50">
+                </div>
+
+                <!-- Nút bấm -->
+                <button onclick="uploadData()" id="upload-btn" class="w-full bg-blue-600 text-white p-3 rounded-md font-bold hover:bg-blue-700 transition">
+                    Gửi Ảnh Ngay
+                </button>
+                
+                <!-- Trạng thái -->
+                <div id="status" class="text-center font-medium mt-2 hidden"></div>
+            </div>
+        </div>
+
+        <!-- ================= TRANG ĐĂNG NHẬP ADMIN ================= -->
+        <div id="admin-auth-page" class="bg-white p-6 rounded-lg shadow-md max-w-md mx-auto hidden">
+            <h2 class="text-xl font-bold mb-4 text-gray-800 text-center">Xác Thực Quản Trị Viên</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Nhập mật khẩu Admin:</label>
+                    <input type="password" id="admin-password" class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500" placeholder="••••••••">
+                </div>
+                <button onclick="checkAdminPassword()" class="w-full bg-gray-800 text-white p-2 rounded-md font-bold hover:bg-gray-900 transition">
+                    Đăng Nhập
+                </button>
+            </div>
+        </div>
+
+        <!-- ================= TRANG QUẢN LÝ (ADMIN) ================= -->
+        <div id="admin-page" class="bg-white p-6 rounded-lg shadow-md hidden">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-gray-800">Danh Sách Ảnh Đã Nhận</h2>
+                <div class="space-x-2">
+                    <button onclick="loadAdminData()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Tải lại 🔄</button>
+                    <button onclick="logoutAdmin()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Đăng xuất 🚪</button>
+                </div>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse border border-gray-200">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="border p-3 text-left">Họ và Tên</th>
+                            <th class="border p-3 text-left">Thời gian gửi</th>
+                            <th class="border p-3 text-center">Xem Ảnh</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-table-body">
+                        <!-- Dữ liệu từ Firebase sẽ tự động đổ vào đây -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Tích hợp Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+
+        // 🔥 Đã điền cấu hình Firebase của bạn ở đây:
+        const firebaseConfig = {
+            apiKey: "AIzaSyDq2eIndzxvU8M6DohWEDbbFM8YbAyPpsE",
+            authDomain: "anh12a1.firebaseapp.com",
+            projectId: "anh12a1",
+            storageBucket: "anh12a1.firebasestorage.app",
+            messagingSenderId: "225328400024",
+            appId: "1:225328400024:web:7deecfa809eb5d8d48b2ed",
+            measurementId: "G-06CWQZ096H"
+        };
+
+        // Khởi tạo Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        // Hàm xử lý Upload dữ liệu
+        window.uploadData = async function() {
+            const name = document.getElementById('user-select').value;
+            const fileInput = document.getElementById('image-input');
+            const file = fileInput.files[0];
+            const statusDiv = document.getElementById('status');
+            const btn = document.getElementById('upload-btn');
+
+            if (!name) { alert("Vui lòng chọn tên của bạn!"); return; }
+            if (!file) { alert("Vui lòng chọn 1 file ảnh!"); return; }
+
+            try {
+                btn.disabled = true;
+                btn.innerText = "Đang xử lý...";
+                statusDiv.classList.remove('hidden', 'text-red-500', 'text-green-500');
+                statusDiv.classList.add('text-blue-500');
+                statusDiv.innerText = "1/2: Đang tải ảnh lên hệ thống...";
+
+                const storageRef = ref(storage, 'user_images/' + Date.now() + '_' + file.name);
+                const snapshot = await uploadBytes(storageRef, file);
+                const downloadURL = await getDownloadURL(snapshot.ref);
+
+                statusDiv.innerText = "2/2: Đang ghi nhận thông tin...";
+
+                await addDoc(collection(db, "uploads"), {
+                    fullName: name,
+                    imageUrl: downloadURL,
+                    createdAt: new Date().toLocaleString('vi-VN')
+                });
+
+                statusDiv.className = "text-center font-medium mt-2 text-green-600";
+                statusDiv.innerText = `🎉 Bạn ${name} đã gửi ảnh thành công!`;
+                fileInput.value = ""; 
+            } catch (error) {
+                console.error(error);
+                statusDiv.className = "text-center font-medium mt-2 text-red-500";
+                statusDiv.innerText = "Có lỗi xảy ra! Nhớ kiểm tra xem đã bật 'Storage' trên Firebase chưa nhé.";
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Gửi Ảnh Ngay";
+            }
+        }
+
+        // Hàm tải dữ liệu về cho Admin xem
+        window.loadAdminData = async function() {
+            const tableBody = document.getElementById('admin-table-body');
+            tableBody.innerHTML = '<tr><td colspan="3" class="text-center p-4">Đang tải dữ liệu...</td></tr>';
+
+            try {
+                const q = query(collection(db, "uploads"));
+                const querySnapshot = await getDocs(q);
+                tableBody.innerHTML = '';
+
+                if(querySnapshot.empty) {
+                    tableBody.innerHTML = '<tr><td colspan="3" class="text-center p-4 text-gray-500">Chưa có ai gửi ảnh nào.</td></tr>';
+                    return;
+                }
+
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    // Bỏ qua tài liệu test mẫu lúc tạo collection nếu có
+                    if (!data.fullName) return;
+
+                    const row = `
+                        <tr class="hover:bg-gray-50 border-b">
+                            <td class="border p-3 font-medium text-gray-800">${data.fullName}</td>
+                            <td class="border p-3 text-sm text-gray-500">${data.createdAt}</td>
+                            <td class="border p-3 text-center">
+                                <a href="${data.imageUrl}" target="_blank" class="inline-block bg-blue-500 text-white px-3 py-1 text-sm rounded hover:bg-blue-600">
+                                    Xem Ảnh Đầy Đủ ↗
+                                </a>
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            } catch (error) {
+                console.error(error);
+                tableBody.innerHTML = '<tr><td colspan="3" class="text-center p-4 text-red-500">Lỗi khi tải danh sách! Hãy check lại Rules của Firestore.</td></tr>';
+            }
+        }
+    </script>
+
+    <script>
+        let isAdminLoggedIn = false;
+
+        // Kiểm tra mật khẩu Admin
+        function checkAdminPassword() {
+            const passInput = document.getElementById('admin-password');
+            if (passInput.value === 'admin@123') {
+                isAdminLoggedIn = true;
+                document.getElementById('admin-auth-page').classList.add('hidden');
+                document.getElementById('admin-page').classList.remove('hidden');
+                passInput.value = ''; 
+                window.loadAdminData(); 
+            } else {
+                alert('Sai mật khẩu rồi bạn ơi! Vui lòng thử lại.');
+            }
+        }
+
+        // Đăng xuất admin
+        function logoutAdmin() {
+            isAdminLoggedIn = false;
+            switchPage('user');
+        }
+
+        // Chuyển đổi qua lại giữa trang User và Admin
+        function switchPage(page) {
+            const userPage = document.getElementById('user-page');
+            const adminAuthPage = document.getElementById('admin-auth-page');
+            const adminPage = document.getElementById('admin-page');
+            
+            const btnUser = document.getElementById('nav-user-btn');
+            const btnAdmin = document.getElementById('nav-admin-btn');
+
+            if (page === 'user') {
+                userPage.classList.remove('hidden');
+                adminAuthPage.classList.add('hidden');
+                adminPage.classList.add('hidden');
+                
+                btnUser.className = "px-4 py-2 rounded bg-blue-800 font-bold";
+                btnAdmin.className = "px-4 py-2 rounded hover:bg-blue-700 font-bold";
+            } else {
+                userPage.classList.add('hidden');
+                
+                btnUser.className = "px-4 py-2 rounded hover:bg-blue-700 font-bold";
+                btnAdmin.className = "px-4 py-2 rounded bg-blue-800 font-bold";
+
+                if (isAdminLoggedIn) {
+                    adminPage.classList.remove('hidden');
+                    window.loadAdminData();
+                } else {
+                    adminAuthPage.classList.remove('hidden');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
