@@ -9,11 +9,13 @@
 </head>
 <body class="bg-slate-50 font-sans min-h-screen text-slate-800">
 
+    <!-- Điều hướng giữa trang User và Admin -->
     <nav class="bg-blue-600 p-4 text-white flex justify-center space-x-4 shadow-lg sticky top-0 z-40">
         <button onclick="switchPage('user')" id="nav-user-btn" class="px-5 py-2 rounded-lg bg-blue-800 font-semibold shadow-inner transition-all duration-200">Trang Gửi Ảnh</button>
         <button onclick="switchPage('admin')" id="nav-admin-btn" class="px-5 py-2 rounded-lg hover:bg-blue-700 font-semibold transition-all duration-200">Trang Quản Lý (Admin)</button>
     </nav>
 
+    <!-- HỘP THOẠI THÔNG BÁO TỰ CHẾ (CUSTOM MODAL) -->
     <div id="custom-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4 transition-all duration-300">
         <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 scale-95 transition-transform duration-300">
             <div id="modal-icon" class="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mx-auto mb-4 text-xl font-bold"></div>
@@ -23,15 +25,17 @@
         </div>
     </div>
 
-    <div class="max-w-4xl mx-auto p-4 mt-6">
+    <div class="max-w-[95%] mx-auto p-2 mt-4">
         
-        <div id="user-page" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100">
+        <!-- ================= TRANG GỬI ẢNH (USER) ================= -->
+        <div id="user-page" class="max-w-4xl mx-auto bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100">
             <div class="text-center mb-6">
                 <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900">Tải Lên Ảnh Kỷ Yếu</h2>
                 <p class="text-sm text-slate-500 mt-1">Vui lòng chọn đúng tên và tải lên tấm ảnh đẹp nhất của bạn nhé!</p>
             </div>
             
             <div class="space-y-5">
+                <!-- Bảng chọn tên Tự chế -->
                 <div class="relative">
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Họ và tên của bạn:</label>
                     <div id="custom-select-trigger" onclick="toggleDropdown()" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 cursor-pointer flex justify-between items-center hover:bg-slate-100/50 transition-all">
@@ -62,11 +66,11 @@
                 <button onclick="uploadData()" id="upload-btn" class="w-full bg-blue-600 text-white p-3.5 rounded-xl font-bold shadow-md shadow-blue-500/20 hover:bg-blue-700 active:scale-[0.99] transition-all duration-150">
                     Gửi Ảnh Ngay
                 </button>
-                
                 <div id="status" class="text-center text-sm font-semibold mt-2 hidden transition-all"></div>
             </div>
         </div>
 
+        <!-- ================= TRANG ĐĂNG NHẬP ADMIN ================= -->
         <div id="admin-auth-page" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100 max-w-md mx-auto hidden">
             <h2 class="text-xl font-bold text-slate-900 mb-4 text-center">Xác Thực Quản Trị Viên</h2>
             <div class="space-y-4">
@@ -80,62 +84,69 @@
             </div>
         </div>
 
-        <div id="admin-page" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hidden">
-            <div class="md:flex md:justify-between md:items-center mb-6 border-b border-slate-100 pb-4">
+        <!-- ================= TRANG QUẢN LÝ (ADMIN DẠNG 2 CỘT SONG SONG) ================= -->
+        <div id="admin-page" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 hidden">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4 border-b border-slate-100 pb-3 gap-3">
                 <div>
-                    <h2 class="text-2xl font-bold text-slate-900">Danh Sách Ảnh Lớp 12A1</h2>
-                    <p class="text-sm text-slate-400 mt-0.5">Sĩ số hoàn thành: <span id="admin-count" class="font-bold text-blue-600">0</span>/37 ảnh</p>
+                    <h2 class="text-xl font-bold text-slate-900">Danh Sách Ảnh Lớp 12A1</h2>
+                    <p class="text-xs text-slate-400">Sĩ số hoàn thành: <span id="admin-count" class="font-bold text-blue-600">0</span>/37 ảnh</p>
                 </div>
-                <div class="mt-4 md:mt-0 flex flex-wrap gap-2">
-                    <button onclick="loadAdminData()" class="bg-slate-100 text-slate-700 px-4 py-2 text-sm rounded-xl font-semibold hover:bg-slate-200 transition-all">Làm mới 🔄</button>
-                    <button onclick="downloadAllAsZip()" class="bg-amber-500 text-white px-4 py-2 text-sm rounded-xl font-semibold shadow-sm shadow-amber-500/10 hover:bg-amber-600 transition-all">Tải File ZIP Lớp 📦</button>
-                    <button onclick="logoutAdmin()" class="bg-rose-500 text-white px-4 py-2 text-sm rounded-xl font-semibold shadow-sm shadow-rose-500/10 hover:bg-rose-600 transition-all">Đăng xuất 🚪</button>
+                <div class="flex flex-wrap gap-1.5">
+                    <button onclick="loadAdminData()" class="bg-slate-100 text-slate-700 px-3 py-1.5 text-xs rounded-xl font-semibold hover:bg-slate-200 transition-all">Làm mới 🔄</button>
+                    <button onclick="downloadAllAsZip()" class="bg-amber-500 text-white px-3 py-1.5 text-xs rounded-xl font-semibold hover:bg-amber-600 transition-all">Tải ZIP 📦</button>
+                    <button onclick="logoutAdmin()" class="bg-rose-500 text-white px-3 py-1.5 text-xs rounded-xl font-semibold hover:bg-rose-600 transition-all">Đăng xuất 🚪</button>
                 </div>
             </div>
             
-            <div class="space-y-8">
-                <div>
-                    <div class="flex justify-between items-center bg-blue-50/70 border border-blue-100 px-4 py-2 rounded-xl mb-3">
-                        <span class="text-sm font-bold text-blue-600">🛒 DANH SÁCH HỌC SINH NAM</span>
-                        <span class="text-xs font-semibold text-blue-500" id="male-count-badge">Đã nộp: 0/20</span>
+            <!-- Grid 2 cột: Trái Nam - Phải Nữ -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                
+                <!-- BÊN TRÁI: KHU VỰC HỌC SINH NAM -->
+                <div class="border border-slate-100 rounded-xl p-2 bg-white">
+                    <div class="flex justify-between items-center bg-blue-50/70 border border-blue-100 px-3 py-1.5 rounded-lg mb-2">
+                        <span class="text-xs font-bold text-blue-600">🛒 NAM (SĨ SỐ: 20)</span>
+                        <span class="text-[11px] font-bold text-blue-500 bg-white px-2 py-0.5 rounded-md border border-blue-100" id="male-count-badge">0/20</span>
                     </div>
-                    <div class="overflow-x-auto rounded-xl border border-slate-100">
-                        <table class="w-full border-collapse">
+                    <div class="overflow-x-auto rounded-lg border border-slate-100">
+                        <table class="w-full border-collapse text-xs">
                             <thead>
-                                <tr class="bg-slate-50 text-slate-600 text-xs font-bold border-b border-slate-100 uppercase tracking-wider">
-                                    <th class="p-3.5 text-left w-1/3">Họ và Tên</th>
-                                    <th class="p-3.5 text-left hidden sm:table-cell w-1/3">Thời gian nộp</th>
-                                    <th class="p-3.5 text-center w-1/3">Trạng thái / Hành động</th>
+                                <tr class="bg-slate-50 text-slate-500 font-bold border-b border-slate-100 text-left">
+                                    <th class="p-2 w-[40%]">Họ và Tên</th>
+                                    <th class="p-2 hidden sm:table-cell w-[30%]">Thời gian nộp</th>
+                                    <th class="p-2 text-center w-[30%]">Hành động</th>
                                 </tr>
                             </thead>
-                            <tbody id="admin-male-table-body" class="text-sm text-slate-700 divide-y divide-slate-100"></tbody>
+                            <tbody id="admin-male-table-body" class="divide-y divide-slate-100"></tbody>
                         </table>
                     </div>
                 </div>
 
-                <div>
-                    <div class="flex justify-between items-center bg-pink-50/70 border border-pink-100 px-4 py-2 rounded-xl mb-3">
-                        <span class="text-sm font-bold text-pink-600">🎀 DANH SÁCH HỌC SINH NỮ</span>
-                        <span class="text-xs font-semibold text-pink-500" id="female-count-badge">Đã nộp: 0/17</span>
+                <!-- BÊN PHẢI: KHU VỰC HỌC SINH NỮ -->
+                <div class="border border-slate-100 rounded-xl p-2 bg-white">
+                    <div class="flex justify-between items-center bg-pink-50/70 border border-pink-100 px-3 py-1.5 rounded-lg mb-2">
+                        <span class="text-xs font-bold text-pink-600">🎀 NỮ (SĨ SỐ: 17)</span>
+                        <span class="text-[11px] font-bold text-pink-500 bg-white px-2 py-0.5 rounded-md border border-pink-100" id="female-count-badge">0/17</span>
                     </div>
-                    <div class="overflow-x-auto rounded-xl border border-slate-100">
-                        <table class="w-full border-collapse">
+                    <div class="overflow-x-auto rounded-lg border border-slate-100">
+                        <table class="w-full border-collapse text-xs">
                             <thead>
-                                <tr class="bg-slate-50 text-slate-600 text-xs font-bold border-b border-slate-100 uppercase tracking-wider">
-                                    <th class="p-3.5 text-left w-1/3">Họ và Tên</th>
-                                    <th class="p-3.5 text-left hidden sm:table-cell w-1/3">Thời gian nộp</th>
-                                    <th class="p-3.5 text-center w-1/3">Trạng thái / Hành động</th>
+                                <tr class="bg-slate-50 text-slate-500 font-bold border-b border-slate-100 text-left">
+                                    <th class="p-2 w-[40%]">Họ và Tên</th>
+                                    <th class="p-2 hidden sm:table-cell w-[30%]">Thời gian nộp</th>
+                                    <th class="p-2 text-center w-[30%]">Hành động</th>
                                 </tr>
                             </thead>
-                            <tbody id="admin-female-table-body" class="text-sm text-slate-700 divide-y divide-slate-100"></tbody>
+                            <tbody id="admin-female-table-body" class="divide-y divide-slate-100"></tbody>
                         </table>
                     </div>
                 </div>
+
             </div>
         </div>
 
     </div>
 
+    <!-- Script điều hướng và Firebase xử lý -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -156,7 +167,6 @@
         let currentAdminData = [];
         let chosenName = "";
 
-        // Định nghĩa danh sách sĩ số cố định của lớp 12A1
         const males = ["Xuân Vương", "Tấn Thành", "Thanh Danh", "Hữu Luân", "Kiến Quốc", "Hữu Nhân", "Bảo Nguyên", "Đức Anh", "Thái Hoàng", "Gia Bảo", "Huỳnh Anh", "Phước Nguyễn", "Xuân Trường", "Đức Hiếu", "Quân Hào", "Tấn Phát", "Văn Khanh", "Thành Ngọc", "Quang Vinh", "Hoàng Kim"];
         const females = ["Lan Anh Lê", "Ánh Dương", "Bích Ngọc", "Phương Thuỳ", "Ngọc Na", "Ngọc Trâm", "Trường Bình", "Hồng Lam", "Lan Anh Pham", "Cát Tường", "Khả Ái", "Minh Thư", "Khánh Nhung", "Thuỳ Trâm", "Xuân Mai", "Cẩm Quyên", "Cẩm Tú"];
 
@@ -339,18 +349,17 @@
             }
         }
 
-        // ADMIN: Tải danh sách ảnh & Tự động chia nhóm Nam / Nữ, Báo đỏ những ai chưa nộp bài
+        // ADMIN: Tải danh sách ảnh hiển thị song song 2 bên
         window.loadAdminData = async function() {
             const maleTable = document.getElementById('admin-male-table-body');
             const femaleTable = document.getElementById('admin-female-table-body');
             
-            maleTable.innerHTML = '<tr><td colspan="3" class="text-center p-4 text-slate-400 animate-pulse">Đang nạp danh sách nam...</td></tr>';
-            femaleTable.innerHTML = '<tr><td colspan="3" class="text-center p-4 text-slate-400 animate-pulse">Đang nạp danh sách nữ...</td></tr>';
+            maleTable.innerHTML = '<tr><td colspan="3" class="text-center p-3 text-slate-400 animate-pulse">Đang tải...</td></tr>';
+            femaleTable.innerHTML = '<tr><td colspan="3" class="text-center p-3 text-slate-400 animate-pulse">Đang tải...</td></tr>';
             
             currentAdminData = []; 
 
             try {
-                // Bước 1: Lấy toàn bộ dữ liệu đã được nộp từ Firestore về máy
                 const querySnapshot = await getDocs(collection(db, "uploads"));
                 const uploadedMap = new Map();
 
@@ -362,8 +371,6 @@
                             createdAt: data.createdAt,
                             imageUrl: data.imageUrl
                         });
-                        
-                        // Đưa vào mảng phục vụ tải file ZIP
                         currentAdminData.push({
                             id: docSnap.id,
                             fullName: data.fullName,
@@ -372,97 +379,93 @@
                     }
                 });
 
-                // Bước 2: Duyệt qua danh sách cố định và render ra bảng NAM
+                // Render Nhóm Nam (Bên Trái)
                 let maleUploadedCount = 0;
                 let maleHtml = "";
-                
                 males.forEach(name => {
                     if (uploadedMap.has(name)) {
                         maleUploadedCount++;
                         const info = uploadedMap.get(name);
                         maleHtml += `
                             <tr id="row-${info.id}" class="hover:bg-slate-50 transition-all">
-                                <td class="p-3.5 font-semibold text-slate-800 flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span> ${name}
+                                <td class="p-2 font-semibold text-slate-800">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-green-500 inline-block mr-1"></span>${name}
                                 </td>
-                                <td class="p-3.5 text-xs text-slate-400 hidden sm:table-cell">${info.createdAt}</td>
-                                <td class="p-3.5 text-center space-x-1">
-                                    <button onclick="openImageWindow('${info.imageUrl}')" class="bg-slate-100 text-slate-700 px-2.5 py-1 text-xs rounded-lg font-medium hover:bg-slate-200 transition-all">Xem</button>
-                                    <button onclick="downloadSingleImage('${info.imageUrl}', '${name}')" class="bg-blue-50 text-blue-600 px-2.5 py-1 text-xs rounded-lg font-medium hover:bg-blue-100 transition-all">Tải lẻ</button>
-                                    <button onclick="deleteImage('${info.id}', '${name}')" class="bg-rose-50 text-rose-600 px-2.5 py-1 text-xs rounded-lg font-medium hover:bg-rose-100 transition-all">Xóa 🗑️</button>
+                                <td class="p-2 text-[11px] text-slate-400 hidden sm:table-cell">${info.createdAt.split(' ')[1] || info.createdAt}</td>
+                                <td class="p-2 text-center space-x-0.5 whitespace-nowrap">
+                                    <button onclick="openImageWindow('${info.imageUrl}')" class="bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded text-[10px] font-medium hover:bg-slate-200">Xem</button>
+                                    <button onclick="downloadSingleImage('${info.imageUrl}', '${name}')" class="bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded text-[10px] font-medium hover:bg-blue-100">Tải</button>
+                                    <button onclick="deleteImage('${info.id}', '${name}')" class="bg-rose-50 text-rose-600 px-1.5 py-0.5 rounded text-[10px] font-medium hover:bg-rose-100">Xóa</button>
                                 </td>
                             </tr>
                         `;
                     } else {
                         maleHtml += `
-                            <tr class="bg-rose-50/40 border-l-4 border-rose-500">
-                                <td class="p-3.5 font-bold text-rose-600 flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full bg-rose-500 inline-block animate-pulse"></span> ${name}
+                            <tr class="bg-rose-50/30 border-l-2 border-rose-500">
+                                <td class="p-2 font-bold text-rose-600">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500 inline-block mr-1 animate-pulse"></span>${name}
                                 </td>
-                                <td class="p-3.5 text-xs text-rose-400 italic hidden sm:table-cell">Chưa gửi dữ liệu</td>
-                                <td class="p-3.5 text-center font-bold text-xs text-rose-500 uppercase tracking-wider">🔴 Chưa nộp ảnh</td>
+                                <td class="p-2 text-[11px] text-rose-400/80 italic hidden sm:table-cell">Chưa nộp</td>
+                                <td class="p-2 text-center font-bold text-[10px] text-rose-500 tracking-wide">🔴 CHƯA GỬI</td>
                             </tr>
                         `;
                     }
                 });
                 maleTable.innerHTML = maleHtml;
-                document.getElementById('male-count-badge').innerText = `Đã nộp: ${maleUploadedCount}/20`;
+                document.getElementById('male-count-badge').innerText = `${maleUploadedCount}/20`;
 
-                // Bước 3: Duyệt qua danh sách cố định và render ra bảng NỮ
+                // Render Nhóm Nữ (Bên Phải)
                 let femaleUploadedCount = 0;
                 let femaleHtml = "";
-                
                 females.forEach(name => {
                     if (uploadedMap.has(name)) {
                         femaleUploadedCount++;
                         const info = uploadedMap.get(name);
                         femaleHtml += `
                             <tr id="row-${info.id}" class="hover:bg-slate-50 transition-all">
-                                <td class="p-3.5 font-semibold text-slate-800 flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span> ${name}
+                                <td class="p-2 font-semibold text-slate-800">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-green-500 inline-block mr-1"></span>${name}
                                 </td>
-                                <td class="p-3.5 text-xs text-slate-400 hidden sm:table-cell">${info.createdAt}</td>
-                                <td class="p-3.5 text-center space-x-1">
-                                    <button onclick="openImageWindow('${info.imageUrl}')" class="bg-slate-100 text-slate-700 px-2.5 py-1 text-xs rounded-lg font-medium hover:bg-slate-200 transition-all">Xem</button>
-                                    <button onclick="downloadSingleImage('${info.imageUrl}', '${name}')" class="bg-blue-50 text-blue-600 px-2.5 py-1 text-xs rounded-lg font-medium hover:bg-blue-100 transition-all">Tải lẻ</button>
-                                    <button onclick="deleteImage('${info.id}', '${name}')" class="bg-rose-50 text-rose-600 px-2.5 py-1 text-xs rounded-lg font-medium hover:bg-rose-100 transition-all">Xóa 🗑️</button>
-                                side>
+                                <td class="p-2 text-[11px] text-slate-400 hidden sm:table-cell">${info.createdAt.split(' ')[1] || info.createdAt}</td>
+                                <td class="p-2 text-center space-x-0.5 whitespace-nowrap">
+                                    <button onclick="openImageWindow('${info.imageUrl}')" class="bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded text-[10px] font-medium hover:bg-slate-200">Xem</button>
+                                    <button onclick="downloadSingleImage('${info.imageUrl}', '${name}')" class="bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded text-[10px] font-medium hover:bg-blue-100">Tải</button>
+                                    <button onclick="deleteImage('${info.id}', '${name}')" class="bg-rose-50 text-rose-600 px-1.5 py-0.5 rounded text-[10px] font-medium hover:bg-rose-100">Xóa</button>
+                                </td>
                             </tr>
                         `;
                     } else {
                         femaleHtml += `
-                            <tr class="bg-rose-50/40 border-l-4 border-rose-500">
-                                <td class="p-3.5 font-bold text-rose-600 flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full bg-rose-500 inline-block animate-pulse"></span> ${name}
+                            <tr class="bg-rose-50/30 border-l-2 border-rose-500">
+                                <td class="p-2 font-bold text-rose-600">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500 inline-block mr-1 animate-pulse"></span>${name}
                                 </td>
-                                <td class="p-3.5 text-xs text-rose-400 italic hidden sm:table-cell">Chưa gửi dữ liệu</td>
-                                <td class="p-3.5 text-center font-bold text-xs text-rose-500 uppercase tracking-wider">🔴 Chưa nộp ảnh</td>
+                                <td class="p-2 text-[11px] text-rose-400/80 italic hidden sm:table-cell">Chưa nộp</td>
+                                <td class="p-2 text-center font-bold text-[10px] text-rose-500 tracking-wide">🔴 CHƯA GỬI</td>
                             </tr>
                         `;
                     }
                 });
                 femaleTable.innerHTML = femaleHtml;
-                document.getElementById('female-count-badge').innerText = `Đã nộp: ${femaleUploadedCount}/17`;
+                document.getElementById('female-count-badge').innerText = `${femaleUploadedCount}/17`;
 
-                // Cập nhật tổng sĩ số chung của lớp lên tiêu đề đầu trang
                 document.getElementById('admin-count').innerText = maleUploadedCount + femaleUploadedCount;
 
             } catch (error) {
                 console.error(error);
-                maleTable.innerHTML = '<tr><td colspan="3" class="text-center p-4 text-rose-500">Lỗi đồng bộ dữ liệu Firestore!</td></tr>';
-                femaleTable.innerHTML = '<tr><td colspan="3" class="text-center p-4 text-rose-500">Lỗi đồng bộ dữ liệu Firestore!</td></tr>';
+                maleTable.innerHTML = '<tr><td colspan="3" class="text-center p-2 text-rose-500">Lỗi kết nối!</td></tr>';
+                femaleTable.innerHTML = '<tr><td colspan="3" class="text-center p-2 text-rose-500">Lỗi kết nối!</td></tr>';
             }
         }
 
-        // ADMIN: Xóa ảnh
         window.deleteImage = async function(docId, name) {
             const confirmed = await showModal(
                 "Xác nhận xóa?", 
-                `Bạn có chắc chắn muốn XÓA tấm ảnh của học sinh [${name}] không? Hành động này sẽ xóa vĩnh viễn trên database!`, 
+                `Bạn có chắc muốn xóa ảnh của [${name}] trên database không?`, 
                 'error',
                 [
-                    { text: 'Hủy bỏ', style: 'bg-slate-100 text-slate-700 w-1/2', value: false },
-                    { text: 'Chắc chắn xóa', style: 'bg-rose-600 text-white w-1/2 shadow-md shadow-rose-600/20', value: true }
+                    { text: 'Hủy', style: 'bg-slate-100 text-slate-700 w-1/2', value: false },
+                    { text: 'Xóa vĩnh viễn', style: 'bg-rose-600 text-white w-1/2 shadow-md', value: true }
                 ]
             );
 
@@ -470,8 +473,7 @@
 
             try {
                 await deleteDoc(doc(db, "uploads", docId));
-                showModal("Đã xóa", `Hệ thống đã xóa thành công hình ảnh của bạn: ${name}`, "success");
-                // Reset và load lại bảng dữ liệu để đồng bộ trạng thái đỏ ngay lập tức
+                showModal("Đã xóa", `Đã xóa thành công hình ảnh của bạn: ${name}`, "success");
                 window.loadAdminData();
             } catch (error) {
                 console.error(error);
@@ -490,11 +492,11 @@
 
         window.downloadAllAsZip = function() {
             if (currentAdminData.length === 0) {
-                showModal("Trống trải", "Chưa có bất kỳ ảnh nào trong danh sách để đóng gói thành file ZIP!", "error");
+                showModal("Trống trải", "Chưa có bất kỳ ảnh nào để đóng gói!", "error");
                 return;
             }
 
-            showModal("Đang chuẩn bị", `Hệ thống đang đóng gói tự động ${currentAdminData.length} tệp ảnh độ nét cao thành 1 file ZIP duy nhất. Vui lòng đợi...`);
+            showModal("Đang chuẩn bị", `Hệ thống đang đóng gói tự động ${currentAdminData.length} tệp ảnh thành 1 file ZIP. Vui lòng đợi...`);
 
             const zip = new JSZip();
             currentAdminData.forEach((item) => {
