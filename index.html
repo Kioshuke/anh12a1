@@ -84,7 +84,7 @@
             <div class="md:flex md:justify-between md:items-center mb-6 border-b border-slate-100 pb-4">
                 <div>
                     <h2 class="text-2xl font-bold text-slate-900">Danh Sách Ảnh Lớp 12A1</h2>
-                    <p class="text-sm text-slate-400 mt-0.5">Sĩ số gửi bài: <span id="admin-count" class="font-bold text-blue-600">0</span>/37 ảnh</p>
+                    <p class="text-sm text-slate-400 mt-0.5">Sĩ số hoàn thành: <span id="admin-count" class="font-bold text-blue-600">0</span>/37 ảnh</p>
                 </div>
                 <div class="mt-4 md:mt-0 flex flex-wrap gap-2">
                     <button onclick="loadAdminData()" class="bg-slate-100 text-slate-700 px-4 py-2 text-sm rounded-xl font-semibold hover:bg-slate-200 transition-all">Làm mới 🔄</button>
@@ -93,17 +93,44 @@
                 </div>
             </div>
             
-            <div class="overflow-x-auto rounded-xl border border-slate-100">
-                <table class="w-full border-collapse">
-                    <thead>
-                        <tr class="bg-slate-50 text-slate-600 text-sm font-semibold border-b border-slate-100">
-                            <th class="p-4 text-left">Học sinh</th>
-                            <th class="p-4 text-left hidden sm:table-cell">Thời gian gửi</th>
-                            <th class="p-4 text-center">Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody id="admin-table-body" class="text-sm text-slate-700 divider-y divider-slate-50"></tbody>
-                </table>
+            <div class="space-y-8">
+                <div>
+                    <div class="flex justify-between items-center bg-blue-50/70 border border-blue-100 px-4 py-2 rounded-xl mb-3">
+                        <span class="text-sm font-bold text-blue-600">🛒 DANH SÁCH HỌC SINH NAM</span>
+                        <span class="text-xs font-semibold text-blue-500" id="male-count-badge">Đã nộp: 0/20</span>
+                    </div>
+                    <div class="overflow-x-auto rounded-xl border border-slate-100">
+                        <table class="w-full border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-600 text-xs font-bold border-b border-slate-100 uppercase tracking-wider">
+                                    <th class="p-3.5 text-left w-1/3">Họ và Tên</th>
+                                    <th class="p-3.5 text-left hidden sm:table-cell w-1/3">Thời gian nộp</th>
+                                    <th class="p-3.5 text-center w-1/3">Trạng thái / Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-male-table-body" class="text-sm text-slate-700 divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-center bg-pink-50/70 border border-pink-100 px-4 py-2 rounded-xl mb-3">
+                        <span class="text-sm font-bold text-pink-600">🎀 DANH SÁCH HỌC SINH NỮ</span>
+                        <span class="text-xs font-semibold text-pink-500" id="female-count-badge">Đã nộp: 0/17</span>
+                    </div>
+                    <div class="overflow-x-auto rounded-xl border border-slate-100">
+                        <table class="w-full border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-600 text-xs font-bold border-b border-slate-100 uppercase tracking-wider">
+                                    <th class="p-3.5 text-left w-1/3">Họ và Tên</th>
+                                    <th class="p-3.5 text-left hidden sm:table-cell w-1/3">Thời gian nộp</th>
+                                    <th class="p-3.5 text-center w-1/3">Trạng thái / Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-female-table-body" class="text-sm text-slate-700 divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -129,7 +156,7 @@
         let currentAdminData = [];
         let chosenName = "";
 
-        // Render danh sách học sinh vào Dropdown tự chế
+        // Định nghĩa danh sách sĩ số cố định của lớp 12A1
         const males = ["Xuân Vương", "Tấn Thành", "Thanh Danh", "Hữu Luân", "Kiến Quốc", "Hữu Nhân", "Bảo Nguyên", "Đức Anh", "Thái Hoàng", "Gia Bảo", "Huỳnh Anh", "Phước Nguyễn", "Xuân Trường", "Đức Hiếu", "Quân Hào", "Tấn Phát", "Văn Khanh", "Thành Ngọc", "Quang Vinh", "Hoàng Kim"];
         const females = ["Lan Anh Lê", "Ánh Dương", "Bích Ngọc", "Phương Thuỳ", "Ngọc Na", "Ngọc Trâm", "Trường Bình", "Hồng Lam", "Lan Anh Pham", "Cát Tường", "Khả Ái", "Minh Thư", "Khánh Nhung", "Thuỳ Trâm", "Xuân Mai", "Cẩm Quyên", "Cẩm Tú"];
 
@@ -216,7 +243,6 @@
             });
         };
 
-        // THUẬT TOÁN NÉN VÒNG LẶP: Tự động ép file ảnh về mức sát 950KB để vừa khít Firestore mà vẫn giữ nét căng
         function autoCompressToFirestoreLimit(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -229,7 +255,6 @@
                         let width = img.width;
                         let height = img.height;
 
-                        // Khung phân giải lớn hỗ trợ hiển thị cực nét
                         const maxResolution = 3000;
                         if (width > maxResolution) {
                             height = Math.round((height * maxResolution) / width);
@@ -244,7 +269,6 @@
                         let quality = 0.95; 
                         let base64Result = canvas.toDataURL('image/jpeg', quality);
                         
-                        // Vòng lặp tính toán: Cứ vượt quá 1,000,000 ký tự (~1MB) là tự hạ nhẹ chất lượng xuống 5% cho tới khi an toàn
                         while (base64Result.length > 1000000 && quality > 0.1) {
                             quality -= 0.05;
                             base64Result = canvas.toDataURL('image/jpeg', quality);
@@ -315,51 +339,118 @@
             }
         }
 
-        // ADMIN: Tải danh sách ảnh
+        // ADMIN: Tải danh sách ảnh & Tự động chia nhóm Nam / Nữ, Báo đỏ những ai chưa nộp bài
         window.loadAdminData = async function() {
-            const tableBody = document.getElementById('admin-table-body');
-            tableBody.innerHTML = '<tr><td colspan="3" class="text-center p-6 text-slate-400 animate-pulse">Đang nạp dữ liệu từ máy chủ Firestore...</td></tr>';
+            const maleTable = document.getElementById('admin-male-table-body');
+            const femaleTable = document.getElementById('admin-female-table-body');
+            
+            maleTable.innerHTML = '<tr><td colspan="3" class="text-center p-4 text-slate-400 animate-pulse">Đang nạp danh sách nam...</td></tr>';
+            femaleTable.innerHTML = '<tr><td colspan="3" class="text-center p-4 text-slate-400 animate-pulse">Đang nạp danh sách nữ...</td></tr>';
+            
             currentAdminData = []; 
 
             try {
+                // Bước 1: Lấy toàn bộ dữ liệu đã được nộp từ Firestore về máy
                 const querySnapshot = await getDocs(collection(db, "uploads"));
-                tableBody.innerHTML = '';
+                const uploadedMap = new Map();
 
-                if(querySnapshot.empty) {
-                    tableBody.innerHTML = '<tr><td colspan="3" class="text-center p-8 text-slate-400">Chưa có thành viên nào gửi ảnh lên hệ thống.</td></tr>';
-                    document.getElementById('admin-count').innerText = "0";
-                    return;
-                }
-
-                let count = 0;
                 querySnapshot.forEach((docSnap) => {
                     const data = docSnap.data();
-                    if (!data.fullName) return;
-                    count++;
-
-                    currentAdminData.push({
-                        id: docSnap.id,
-                        fullName: data.fullName,
-                        imageUrl: data.imageUrl
-                    });
-
-                    const row = `
-                        <tr id="row-${docSnap.id}" class="hover:bg-slate-50/80 border-b border-slate-100 transition-all">
-                            <td class="p-4 font-semibold text-slate-800">${data.fullName}</td>
-                            <td class="p-4 text-xs text-slate-400 hidden sm:table-cell">${data.createdAt}</td>
-                            <td class="p-4 text-center space-x-1">
-                                <button onclick="openImageWindow('${data.imageUrl}')" class="bg-slate-100 text-slate-700 px-3 py-1.5 text-xs rounded-xl font-medium hover:bg-slate-200 transition-all">Xem</button>
-                                <button onclick="downloadSingleImage('${data.imageUrl}', '${data.fullName}')" class="bg-blue-50 text-blue-600 px-3 py-1.5 text-xs rounded-xl font-medium hover:bg-blue-100 transition-all">Tải về</button>
-                                <button onclick="deleteImage('${docSnap.id}', '${data.fullName}')" class="bg-rose-50 text-rose-600 px-3 py-1.5 text-xs rounded-xl font-medium hover:bg-rose-100 transition-all">Xóa 🗑️</button>
-                            </td>
-                        </tr>
-                    `;
-                    tableBody.innerHTML += row;
+                    if (data.fullName) {
+                        uploadedMap.set(data.fullName, {
+                            id: docSnap.id,
+                            createdAt: data.createdAt,
+                            imageUrl: data.imageUrl
+                        });
+                        
+                        // Đưa vào mảng phục vụ tải file ZIP
+                        currentAdminData.push({
+                            id: docSnap.id,
+                            fullName: data.fullName,
+                            imageUrl: data.imageUrl
+                        });
+                    }
                 });
-                document.getElementById('admin-count').innerText = count;
+
+                // Bước 2: Duyệt qua danh sách cố định và render ra bảng NAM
+                let maleUploadedCount = 0;
+                let maleHtml = "";
+                
+                males.forEach(name => {
+                    if (uploadedMap.has(name)) {
+                        maleUploadedCount++;
+                        const info = uploadedMap.get(name);
+                        maleHtml += `
+                            <tr id="row-${info.id}" class="hover:bg-slate-50 transition-all">
+                                <td class="p-3.5 font-semibold text-slate-800 flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span> ${name}
+                                </td>
+                                <td class="p-3.5 text-xs text-slate-400 hidden sm:table-cell">${info.createdAt}</td>
+                                <td class="p-3.5 text-center space-x-1">
+                                    <button onclick="openImageWindow('${info.imageUrl}')" class="bg-slate-100 text-slate-700 px-2.5 py-1 text-xs rounded-lg font-medium hover:bg-slate-200 transition-all">Xem</button>
+                                    <button onclick="downloadSingleImage('${info.imageUrl}', '${name}')" class="bg-blue-50 text-blue-600 px-2.5 py-1 text-xs rounded-lg font-medium hover:bg-blue-100 transition-all">Tải lẻ</button>
+                                    <button onclick="deleteImage('${info.id}', '${name}')" class="bg-rose-50 text-rose-600 px-2.5 py-1 text-xs rounded-lg font-medium hover:bg-rose-100 transition-all">Xóa 🗑️</button>
+                                </td>
+                            </tr>
+                        `;
+                    } else {
+                        maleHtml += `
+                            <tr class="bg-rose-50/40 border-l-4 border-rose-500">
+                                <td class="p-3.5 font-bold text-rose-600 flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-rose-500 inline-block animate-pulse"></span> ${name}
+                                </td>
+                                <td class="p-3.5 text-xs text-rose-400 italic hidden sm:table-cell">Chưa gửi dữ liệu</td>
+                                <td class="p-3.5 text-center font-bold text-xs text-rose-500 uppercase tracking-wider">🔴 Chưa nộp ảnh</td>
+                            </tr>
+                        `;
+                    }
+                });
+                maleTable.innerHTML = maleHtml;
+                document.getElementById('male-count-badge').innerText = `Đã nộp: ${maleUploadedCount}/20`;
+
+                // Bước 3: Duyệt qua danh sách cố định và render ra bảng NỮ
+                let femaleUploadedCount = 0;
+                let femaleHtml = "";
+                
+                females.forEach(name => {
+                    if (uploadedMap.has(name)) {
+                        femaleUploadedCount++;
+                        const info = uploadedMap.get(name);
+                        femaleHtml += `
+                            <tr id="row-${info.id}" class="hover:bg-slate-50 transition-all">
+                                <td class="p-3.5 font-semibold text-slate-800 flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span> ${name}
+                                </td>
+                                <td class="p-3.5 text-xs text-slate-400 hidden sm:table-cell">${info.createdAt}</td>
+                                <td class="p-3.5 text-center space-x-1">
+                                    <button onclick="openImageWindow('${info.imageUrl}')" class="bg-slate-100 text-slate-700 px-2.5 py-1 text-xs rounded-lg font-medium hover:bg-slate-200 transition-all">Xem</button>
+                                    <button onclick="downloadSingleImage('${info.imageUrl}', '${name}')" class="bg-blue-50 text-blue-600 px-2.5 py-1 text-xs rounded-lg font-medium hover:bg-blue-100 transition-all">Tải lẻ</button>
+                                    <button onclick="deleteImage('${info.id}', '${name}')" class="bg-rose-50 text-rose-600 px-2.5 py-1 text-xs rounded-lg font-medium hover:bg-rose-100 transition-all">Xóa 🗑️</button>
+                                side>
+                            </tr>
+                        `;
+                    } else {
+                        femaleHtml += `
+                            <tr class="bg-rose-50/40 border-l-4 border-rose-500">
+                                <td class="p-3.5 font-bold text-rose-600 flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-rose-500 inline-block animate-pulse"></span> ${name}
+                                </td>
+                                <td class="p-3.5 text-xs text-rose-400 italic hidden sm:table-cell">Chưa gửi dữ liệu</td>
+                                <td class="p-3.5 text-center font-bold text-xs text-rose-500 uppercase tracking-wider">🔴 Chưa nộp ảnh</td>
+                            </tr>
+                        `;
+                    }
+                });
+                femaleTable.innerHTML = femaleHtml;
+                document.getElementById('female-count-badge').innerText = `Đã nộp: ${femaleUploadedCount}/17`;
+
+                // Cập nhật tổng sĩ số chung của lớp lên tiêu đề đầu trang
+                document.getElementById('admin-count').innerText = maleUploadedCount + femaleUploadedCount;
+
             } catch (error) {
                 console.error(error);
-                tableBody.innerHTML = '<tr><td colspan="3" class="text-center p-6 text-rose-500">Lỗi kết nối Firestore!</td></tr>';
+                maleTable.innerHTML = '<tr><td colspan="3" class="text-center p-4 text-rose-500">Lỗi đồng bộ dữ liệu Firestore!</td></tr>';
+                femaleTable.innerHTML = '<tr><td colspan="3" class="text-center p-4 text-rose-500">Lỗi đồng bộ dữ liệu Firestore!</td></tr>';
             }
         }
 
@@ -380,13 +471,8 @@
             try {
                 await deleteDoc(doc(db, "uploads", docId));
                 showModal("Đã xóa", `Hệ thống đã xóa thành công hình ảnh của bạn: ${name}`, "success");
-                
-                const targetRow = document.getElementById(`row-${docId}`);
-                if(targetRow) targetRow.remove();
-                
-                let currentCount = parseInt(document.getElementById('admin-count').innerText);
-                document.getElementById('admin-count').innerText = currentCount - 1;
-                currentAdminData = currentAdminData.filter(item => item.id !== docId);
+                // Reset và load lại bảng dữ liệu để đồng bộ trạng thái đỏ ngay lập tức
+                window.loadAdminData();
             } catch (error) {
                 console.error(error);
                 showModal("Lỗi", "Không thể thực thi lệnh xóa!", "error");
